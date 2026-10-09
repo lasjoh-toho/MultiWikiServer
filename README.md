@@ -99,6 +99,15 @@ So essentially, the paths you need to backup are:
 - `/tw5/versions.txt`
 - `/passwords.key` (or save it separately)
 
+### The `backup-store` command
+
+`npx mws backup-store <backup-folder>` writes exactly these paths to a new folder. The database is copied with SQLite's `VACUUM INTO`, which produces a consistent snapshot, so the server can keep running while the backup is made. A manifest (`mws-backup.json`) records the date, the MWS version and the list of files.
+
+- `--skip-passwords-key` leaves out `passwords.key` so you can store it separately.
+- `--json` prints the manifest as JSON on the last line of output, for scripts and tools such as TiddlyDesktop.
+
+To restore, stop the server, copy the contents of the backup folder into an empty data folder, then run `npm ci` and `npx mws update-tiddlywiki`.
+
 ## Development
 
 In 0.2, the development data folder is `/dev/wiki`.

@@ -11,7 +11,7 @@ import { TW } from "tiddlywiki";
 import { StateObject } from "./RequestState";
 import { ServerState } from "./ServerState";
 import { SqliteAdapter } from "./db/sqlite-adapter";
-import { UpdateTiddlyWikiCommand } from "./new-commands";
+import { BackupStoreCommand, UpdateTiddlyWikiCommand } from "./new-commands";
 import { SessionManager } from "./new-managers/sessions";
 import { bootDefaultTiddlyWiki, defaultPreloadFunction, startupCache } from "./plugin-cache";
 import { PluginCache } from "./plugin-cache/PluginCache";
@@ -41,6 +41,11 @@ serverEvents.on("cli.execute.before", async (name, params, options, instance) =>
   const wikiPath = path.resolve(process.cwd());
   if (!existsSync(wikiPath)) throw "The wiki path does not exist";
   if (is<UpdateTiddlyWikiCommand>(instance, name === "update-tiddlywiki")) {
+    instance.wikiPath = wikiPath;
+    return;
+  }
+  // the backup only needs the data folder, not the server config or migrations
+  if (is<BackupStoreCommand>(instance, name === "backup-store")) {
     instance.wikiPath = wikiPath;
     return;
   }
