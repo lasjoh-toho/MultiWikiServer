@@ -3,7 +3,9 @@ import { CSSResult, PropertyValues, ReactiveElement } from '@lit/reactive-elemen
 import { is, render } from '@tiddlywiki/jsx-runtime';
 import { Subscription } from 'rxjs';
 import { observeResize, unobserveResize } from './resizeObserver';
-import type { Dispatch, SetStateAction } from 'react';
+// Same shape as React's useState setter, declared here so jsx-lit does not depend on React's types
+type SetStateAction<T> = T | ((prev: T) => T);
+type Dispatch<A> = (value: A) => void;
 
 ReactiveElement.enableWarning?.('async-perform-update');
 
